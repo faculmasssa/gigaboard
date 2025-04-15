@@ -6,6 +6,9 @@ const sql = require('sqlite3');
 
 const app = express();
 const db = new sql.Database(path.join(__dirname, 'db.sql'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 db.run(`
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,5 +35,5 @@ app.get('/cadastro', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port: ${PORT} https://localhost:${PORT}/`);
+  console.log(`Server running on port: ${PORT} http://localhost:${PORT}/`);
 });

@@ -4,13 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GigaBoard Cadastro</title>
+    <link rel="stylesheet" href="assets/css/style-cadastro.css">
 </head>
 <body>
-    <form>
-        <input type="text" name="name" placeholder="Nome">
-        <input type="text" name="email" placeholder="Email">
-        <input type="password" name="password" placeholder="Senha">
-        <button type="submit">Cadastrar</button>
-    </form>
+    <button class="btn-voltar" onclick="window.history.back()">← Voltar</button>
+
+    <div class="main" id="mainBox">
+        <div class="form-wrapper">
+          <div class="form-container">
+            <!-- Login -->
+            <div class="form-side" id="loginForm">
+              <h2>Login</h2>
+              <input type="email" placeholder="Email">
+              <input type="password" placeholder="Senha">
+              <button>Entrar</button>
+            </div>
+      
+            <!-- Cadastro -->
+            <div class="form-side" id="registerForm">
+              <h2>Cadastro</h2>
+              <input type="text" placeholder="Nome">
+              <input type="email" placeholder="Email">
+              <input type="password" placeholder="Senha">
+              <input type="password" placeholder="Confirmar Senha">
+              <button>Cadastrar</button>
+            </div>
+          </div>
+        </div>
+      
+        <div class="info-side">
+          <p id="infoText">Se não tem login,<br> cadastre-se</p>
+          <button onclick="toggleForm()" id="infoBtn">Cadastre-se</button>
+        </div>
+      </div>
+
+      <script src="assets/js/script-cadastro.js"></script>
 </body>
 </html>
