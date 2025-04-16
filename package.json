@@ -5,6 +5,7 @@
     "browserify": "^17.0.1",
     "express": "^5.1.0",
     "gulp": "^5.0.0",
+    "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
     "watchify": "^4.0.0"
   }

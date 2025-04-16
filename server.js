@@ -4,33 +4,24 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
 const path = require('path');
-const sql = require('sqlite3');
+const { Sequelize, DataTypes } = require('sequelize');
 
 const app = express();
-const db = new sql.Database(path.join(__dirname, 'db.sql'));
+
+const db = new Sequelize({ dialect: "sqlite", storage: path.join(__dirname, 'db.sql') });
+db.sync({ force: true });
+const User = db.define('User', {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true },
+    name: { type: DataTypes.STRING, allowNull: false },
+    email: { type: DataTypes.STRING, allowNull: false },
+    password: { type: 'BINARY(32)', allowNull: false },
+    salt: { type: 'BINARY(16)', allowNull: false },
+});
+
 const public = path.join(__dirname, "./public");
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-
-/**
- * @typedef {object} User
- * @property {number} id
- * @property {string} name 
- * @property {string} email 
- * @property {Buffer} password
- * @property {Buffer} salt
- */
-
-db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        password BINARY(32) NOT NULL,
-        salt BINARY(16) NOT NULL
-    );
-`);
 
 app.get('/', (req, res) => {
 
@@ -53,17 +44,14 @@ app.get('/painel', (req, res) => {
 /** @typedef {import('./js/script-cadastro.js').RegisterInfo} RegisterInfo */
 app.post('/api/register', async (req, res) => {
     let /** @type {RegisterInfo} */ info = req.body;
-    let /** @type {User | null} */ conflictingUser = await new Promise(res => 
-        db.prepare('SELECT * FROM users WHERE email=?').get(info.email, (err, row) => res(row))
-    );
+    let conflictingUser = await User.findOne({ where: { email: info.email } });
     if(conflictingUser) {
         res.sendStatus(409);
         return;
     }
     let salt = crypto.randomBytes(16);
     let hashedPass = crypto.pbkdf2Sync(info.password, salt, 1000, 32, "sha256");
-    db.prepare('INSERT INTO users (name, email, password, salt) VALUES (?, ?, ?, ?)')
-        .get(info.name, info.email, hashedPass, salt);
+    await User.build({ name: info.name, email: info.email, password: hashedPass, salt: salt }).save();
     res.sendStatus(200);
 });
 
