@@ -7,19 +7,15 @@ const watchify = require('watchify');
 
 // Scripts usados para cada página, 
 // Caso uma pagína use mais de um script, adiciona só o principal, NÃO ADICIONE TODOS PORFAVO 👍
-const scripts = [];
-
-if(!fs.existsSync("./public/dist")){
-    fs.mkdirSync("./public/dist");
-}
+const scripts = ['script-cadastro'];
 
 // Build uma vez
 gulp.task('build', function(done) {
     let remaining;
     scripts.forEach((entry, _, entries) => {
         remaining = remaining || entries.length;
-        browserify(`./public/js/${entry}.js`).bundle().pipe(
-            fs.createWriteStream(`./public/dist/${entry}-bundle.js`).on('finish', function() {
+        browserify(`./js/${entry}.js`).bundle().pipe(
+            fs.createWriteStream(`./public/js/${entry}.js`).on('finish', function() {
                 if(!--remaining) done();
             })
         );

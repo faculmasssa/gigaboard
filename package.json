@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "browserify": "^17.0.1",
     "express": "^5.1.0",
-    "sqlite3": "^5.1.7"
+    "gulp": "^5.0.0",
+    "sqlite3": "^5.1.7",
+    "watchify": "^4.0.0"
   }
 }
