@@ -17,19 +17,19 @@
         <!-- Login -->
         <div class="form-side" id="loginForm">
           <h2>Login</h2>
-          <input type="email" placeholder="Email">
-          <input type="password" placeholder="Senha">
-          <button>Entrar</button>
+          <input type="email" id="login-email" placeholder="Email" required>
+          <input type="password" id="login-password" placeholder="Senha" required>
+          <button onclick="login()">Entrar</button>
         </div>
 
         <!-- Cadastro -->
         <div class="form-side" id="registerForm">
           <h2>Cadastro</h2>
-          <input type="text" placeholder="Nome">
-          <input type="email" placeholder="Email">
-          <input type="password" placeholder="Senha">
-          <input type="password" placeholder="Confirmar Senha">
-          <button>Cadastrar</button>
+          <input type="text" id="register-name" placeholder="Nome" required>
+          <input type="email" id="register-email" placeholder="Email" required>
+          <input type="password" id="register-password" placeholder="Senha" required>
+          <input type="password" id="register-password2" placeholder="Confirmar Senha" required>
+          <button onclick="register()">Cadastrar</button>
         </div>
       </div>
     </div>
@@ -40,7 +40,7 @@
     </div>
   </div>
 
-  <script src="assets/js/script-cadastro.js"></script>
+  <script src="js/script-cadastro.js">let cadastro = r</script>
 </body>
 
 </html>

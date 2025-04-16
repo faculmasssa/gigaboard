@@ -1,10 +1,12 @@
-const mainBox = document.getElementById('mainBox');
-const infoText = document.getElementById('infoText');
-const infoButton = document.getElementById('infoBtn');
+// @ts-check
+
+const mainBox = /** @type {HTMLElement} */ (document.getElementById('mainBox'));
+const infoText = /** @type {HTMLElement} */ (document.getElementById('infoText'));
+const infoButton = /** @type {HTMLElement} */ (document.getElementById('infoBtn'));
 
 let isCadastro = false;
 
-function toggleForm() {
+global.toggleForm = function() {
     isCadastro = !isCadastro;
     mainBox.classList.toggle('cadastro-mode');
 
@@ -16,3 +18,54 @@ function toggleForm() {
         infoButton.textContent = 'Cadastre-se';
     }
 }
+
+global.login = function() {
+    let email = /** @type {HTMLInputElement} */ (document.getElementById("login-email"));
+    let password = /** @type {HTMLInputElement} */ (document.getElementById("login-password"));
+    if(!email.reportValidity() || !password.reportValidity()) {
+        return;
+    }
+}
+
+/** 
+ * @typedef {Object} RegisterInfo
+ * @property {string} name
+ * @property {string} email 
+ * @property {string} password
+ */
+
+global.register = async function() {
+    let name = /** @type {HTMLInputElement} */ (document.getElementById("register-name"));
+    let email = /** @type {HTMLInputElement} */ (document.getElementById("register-email"));
+    let password = /** @type {HTMLInputElement} */ (document.getElementById("register-password"));
+    let password2 = /** @type {HTMLInputElement} */ (document.getElementById("register-password2"));
+    if(!name.reportValidity() || !email.reportValidity()) {
+        return;
+    }
+    const minPasswordLength = 8;
+    if(password.value.length < minPasswordLength) {
+        password.setCustomValidity(`A senha precisa ter no mínimo ${minPasswordLength} caracteres.`);
+        password.reportValidity();
+        return;
+    }
+    if(password.value !== password2.value) {
+        password.setCustomValidity('As senhas precisam ser iguais.');
+        password.reportValidity();
+        return;
+    }
+    let res = await fetch('/api/register', {
+        method: 'POST',
+        body: JSON.stringify(/** @type {RegisterInfo} */ ({
+            name: name.value, email: email.value, password: password.value
+        })),
+        headers: {'Content-Type': 'application/json'},
+    });
+    if(res.status === 200) {
+        alert('sucexo');
+    }else if(res.status === 409) {
+        email.setCustomValidity('Email já registrado');
+        email.reportValidity();
+    }
+}
+
+module.exports = {};
