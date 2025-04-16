@@ -30,7 +30,7 @@ gulp.task('watch', function(done) {
         let bundler = watchify(browserify(`./js/${entry}.js`));
         function bundle() {
             bundler.bundle().pipe(
-                fs.createWriteStream(`./dist/${entry}-bundle.js`).on('finish', function() {
+                fs.createWriteStream(`./public/js/${entry}.js`).on('finish', function() {
                     if(!--remaining) done();
                 })
             );
