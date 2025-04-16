@@ -9,6 +9,10 @@ const watchify = require('watchify');
 // Caso uma pagína use mais de um script, adiciona só o principal, NÃO ADICIONE TODOS PORFAVO 👍
 const scripts = ['script-cadastro'];
 
+if(!fs.existsSync('./public/js')) {
+    fs.mkdirSync('./public/js')
+}
+
 // Build uma vez
 gulp.task('build', function(done) {
     let remaining;
