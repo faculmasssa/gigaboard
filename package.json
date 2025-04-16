@@ -5,7 +5,10 @@
     "buffer": "^6.0.3",
     "buffer-map": "^0.0.8",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-basic-auth": "^1.2.1",
+    "fracturedjsonjs": "^4.0.2",
     "js-cookie": "^3.0.5",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"

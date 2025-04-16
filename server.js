@@ -1,12 +1,15 @@
 // @ts-check
 
+require('dotenv').config();
 const express = require('express');
+const basicAuth = require('express-basic-auth');
 const bodyParser = require('body-parser');
 const { BufferMap } = require('buffer-map');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 const path = require('path');
 const { Sequelize, DataTypes, Model } = require('sequelize');
+const formatter = new (require('fracturedjsonjs')).Formatter();
 
 const app = express();
 
@@ -56,6 +59,11 @@ app.get('/cadastro', (req, res) => {
     res.sendFile(path.join(public, './cadastro.html'));
 });
 
+app.get('/admin', basicAuth({ 
+    users: {'admin': /** @type {string} */ (process.env['API_KEY'])}, challenge: true 
+}), (req, res) => {
+    res.sendFile(path.join(public, './admin.html'));
+});
 
 /** @typedef {import('./js/cadastro.js').RegisterInfo} RegisterInfo */
 app.post('/api/register', async (req, res) => {
@@ -103,6 +111,16 @@ app.post('/api/logout', async (req, res) => {
         sessions.delete(token);
     }
     res.sendStatus(200);
+});
+
+/** @typedef {import('./js/admin.js').QueryInfo} QueryInfo */
+app.post('/api/query', async (req, res) => {
+    let /** @type {QueryInfo} */ info = req.body;
+    if(info.key !== process.env['API_KEY']) {
+        res.sendStatus(401);
+        return;
+    }
+    res.status(200).send(formatter.Serialize(await db.query(info.query)));
 });
 
 const PORT = process.env.PORT || 3000;
