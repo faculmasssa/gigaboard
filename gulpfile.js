@@ -7,7 +7,7 @@ const watchify = require('watchify');
 
 // Scripts usados para cada página, 
 // Caso uma pagína use mais de um script, adiciona só o principal, NÃO ADICIONE TODOS PORFAVO 👍
-const scripts = ['script-cadastro'];
+const scripts = ['cadastro', 'painel'];
 
 if(!fs.existsSync('./public/js')) {
     fs.mkdirSync('./public/js');

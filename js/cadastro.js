@@ -30,12 +30,34 @@ global.toggleForm = function() {
     swapForm();
 }
 
-global.login = function() {
+/** 
+ * @typedef {Object} LoginInfo
+ * @property {string} email 
+ * @property {string} password
+ */
+global.login = async function() {
     let email = /** @type {HTMLInputElement} */ (document.getElementById("login-email"));
     let password = /** @type {HTMLInputElement} */ (document.getElementById("login-password"));
     if(!email.reportValidity() || !password.reportValidity()) {
         return;
     }
+    let res = await fetch('/api/login', {
+        method: 'POST',
+        body: JSON.stringify(/** @type {LoginInfo} */ ({
+            email: email.value, password: password.value
+        })),
+        headers: {'Content-Type': 'application/json'},
+    });
+    if(res.status === 409) {
+        email.setCustomValidity('Email ou senha inválido.')
+        email.reportValidity();
+        return;
+    }else if(res.status !== 200) {
+        return;
+    }
+    let token = Buffer.from(await res.arrayBuffer()).toString('base64');
+    cookie.set('token', token);
+    window.location.href = '/';
 }
 
 /** 
@@ -44,7 +66,6 @@ global.login = function() {
  * @property {string} email 
  * @property {string} password
  */
-
 global.register = async function() {
     let name = /** @type {HTMLInputElement} */ (document.getElementById("register-name"));
     let email = /** @type {HTMLInputElement} */ (document.getElementById("register-email"));
