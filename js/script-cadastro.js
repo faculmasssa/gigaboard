@@ -1,5 +1,8 @@
 // @ts-check
 
+const Buffer = require('buffer/').Buffer;
+const cookie = require('js-cookie');
+
 const mainBox = /** @type {HTMLElement} */ (document.getElementById('mainBox'));
 const infoText = /** @type {HTMLElement} */ (document.getElementById('infoText'));
 const infoButton = /** @type {HTMLElement} */ (document.getElementById('infoBtn'));
@@ -8,14 +11,14 @@ let isCadastro = window.location.hash === '#registro';
 swapForm();
 
 function swapForm() {
-    console.log(isCadastro);
     if (isCadastro) {
+        history.replaceState(undefined, '', '#registro');
         window.location.hash = 'registro';
         infoText.innerHTML = 'Já tem conta?<br> Faça login';
         infoButton.textContent = 'Entrar';
         mainBox.classList.add('cadastro-mode');
     } else {
-        window.location.hash = '';
+        history.replaceState(undefined, '', '#');
         infoText.innerHTML = 'Se não tem login,<br> cadastre-se';
         infoButton.textContent = 'Cadastre-se';
         mainBox.classList.remove('cadastro-mode')
@@ -69,7 +72,9 @@ global.register = async function() {
         headers: {'Content-Type': 'application/json'},
     });
     if(res.status === 200) {
-        alert('sucexo');
+        let token = Buffer.from(await res.arrayBuffer()).toString('base64');
+        cookie.set('token', token);
+        window.location.href = '/';
     }else if(res.status === 409) {
         email.setCustomValidity('Email já registrado');
         email.reportValidity();
