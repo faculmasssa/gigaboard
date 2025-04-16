@@ -10,7 +10,7 @@ const watchify = require('watchify');
 const scripts = ['script-cadastro'];
 
 if(!fs.existsSync('./public/js')) {
-    fs.mkdirSync('./public/js')
+    fs.mkdirSync('./public/js');
 }
 
 // Build uma vez
