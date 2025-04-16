@@ -4,19 +4,27 @@ const mainBox = /** @type {HTMLElement} */ (document.getElementById('mainBox'));
 const infoText = /** @type {HTMLElement} */ (document.getElementById('infoText'));
 const infoButton = /** @type {HTMLElement} */ (document.getElementById('infoBtn'));
 
-let isCadastro = false;
+let isCadastro = window.location.hash === '#registro';
+swapForm();
+
+function swapForm() {
+    console.log(isCadastro);
+    if (isCadastro) {
+        window.location.hash = 'registro';
+        infoText.innerHTML = 'Já tem conta?<br> Faça login';
+        infoButton.textContent = 'Entrar';
+        mainBox.classList.add('cadastro-mode');
+    } else {
+        window.location.hash = '';
+        infoText.innerHTML = 'Se não tem login,<br> cadastre-se';
+        infoButton.textContent = 'Cadastre-se';
+        mainBox.classList.remove('cadastro-mode')
+    }
+}
 
 global.toggleForm = function() {
     isCadastro = !isCadastro;
-    mainBox.classList.toggle('cadastro-mode');
-
-    if (isCadastro) {
-        infoText.innerHTML = 'Já tem conta?<br> Faça login';
-        infoButton.textContent = 'Entrar';
-    } else {
-        infoText.innerHTML = 'Se não tem login,<br> cadastre-se';
-        infoButton.textContent = 'Cadastre-se';
-    }
+    swapForm();
 }
 
 global.login = function() {
