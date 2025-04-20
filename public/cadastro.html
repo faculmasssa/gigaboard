@@ -29,7 +29,7 @@
           </label>
           <input type="password" id="login-password" required>
 
-          <button>Entrar</button>
+          <button onclick="login()">Entrar</button>
         </div>
 
         <!-- Cadastro -->
@@ -55,14 +55,14 @@
             <img src="/public/assets/icons/key-fill.svg" alt="Confirmar Senha"> Confirma Senha
           </label>
           <input type="password" id="register-password2" required>
-          <button>Cadastrar</button>
+          <button onclick="register()">Cadastrar</button>
         </div>
       </div>
     </div>
 
     <div class="info-side">
       <p id="infoText">Se não tem login,<br> cadastre-se</p>
-      <button onclick="toggleForm()" id="infoBtn">Cadastre-se</button>
+      <button onclick="cadastro.toggleForm()" id="infoBtn">Cadastre-se</button>
     </div>
   </div>
 

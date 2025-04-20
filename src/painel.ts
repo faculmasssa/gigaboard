@@ -1,7 +1,6 @@
-// @ts-check
-const cookie = require('js-cookie');
+import cookie from 'js-cookie'
 
-global.logout = async function() {
+export async function logout() {
     await fetch('/api/logout', {
         method: 'POST',
         body: JSON.stringify(/** @type {import('../server').LogoutInfo} */ ({

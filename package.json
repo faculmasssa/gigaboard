@@ -11,12 +11,17 @@
     "fracturedjsonjs": "^4.0.2",
     "js-cookie": "^3.0.5",
     "sequelize": "^6.37.7",
+    "sequelize-typescript": "^2.1.6",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.1",
+    "@types/js-cookie": "^3.0.6",
     "browserify": "^17.0.1",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
+    "tsify": "^5.0.4",
     "watchify": "^4.0.0"
   }
 }

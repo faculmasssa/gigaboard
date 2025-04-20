@@ -1,11 +1,9 @@
-// @ts-check
-
-const Buffer = require('buffer/').Buffer;
+import { Buffer } from "buffer/"
 const cookie = require('js-cookie');
 
-const mainBox = /** @type {HTMLElement} */ (document.getElementById('mainBox'));
-const infoText = /** @type {HTMLElement} */ (document.getElementById('infoText'));
-const infoButton = /** @type {HTMLElement} */ (document.getElementById('infoBtn'));
+const mainBox = <HTMLElement>(document.getElementById('mainBox'));
+const infoText = <HTMLElement>(document.getElementById('infoText'));
+const infoButton = <HTMLElement>(document.getElementById('infoBtn'));
 
 let isCadastro = window.location.hash === '#registro';
 swapForm();
@@ -25,25 +23,25 @@ function swapForm() {
     }
 }
 
-global.toggleForm = function() {
+export function toggleForm() {
     isCadastro = !isCadastro;
     swapForm();
 }
 
-/** 
- * @typedef {Object} LoginInfo
- * @property {string} email 
- * @property {string} password
- */
-global.login = async function() {
-    let email = /** @type {HTMLInputElement} */ (document.getElementById("login-email"));
-    let password = /** @type {HTMLInputElement} */ (document.getElementById("login-password"));
+export interface LoginInfo {
+    email: string,
+    password: string
+}
+
+export async function login() {
+    let email = <HTMLInputElement>(document.getElementById("login-email"));
+    let password = <HTMLInputElement>(document.getElementById("login-password"));
     if(!email.reportValidity() || !password.reportValidity()) {
         return;
     }
     let res = await fetch('/api/login', {
         method: 'POST',
-        body: JSON.stringify(/** @type {LoginInfo} */ ({
+        body: JSON.stringify(<LoginInfo>({
             email: email.value, password: password.value
         })),
         headers: {'Content-Type': 'application/json'},
@@ -60,17 +58,18 @@ global.login = async function() {
     window.location.href = '/';
 }
 
-/** 
- * @typedef {Object} RegisterInfo
- * @property {string} name
- * @property {string} email 
- * @property {string} password
- */
-global.register = async function() {
-    let name = /** @type {HTMLInputElement} */ (document.getElementById("register-name"));
-    let email = /** @type {HTMLInputElement} */ (document.getElementById("register-email"));
-    let password = /** @type {HTMLInputElement} */ (document.getElementById("register-password"));
-    let password2 = /** @type {HTMLInputElement} */ (document.getElementById("register-password2"));
+
+export interface RegisterInfo {
+    name: string,
+    email: string,
+    password: string
+}
+
+export async function register() {
+    let name = <HTMLInputElement>(document.getElementById("register-name"));
+    let email = <HTMLInputElement>(document.getElementById("register-email"));
+    let password = <HTMLInputElement>(document.getElementById("register-password"));
+    let password2 = <HTMLInputElement>(document.getElementById("register-password2"));
     if(!name.reportValidity() || !email.reportValidity()) {
         return;
     }
@@ -87,7 +86,7 @@ global.register = async function() {
     }
     let res = await fetch('/api/register', {
         method: 'POST',
-        body: JSON.stringify(/** @type {RegisterInfo} */ ({
+        body: JSON.stringify(<RegisterInfo>({
             name: name.value, email: email.value, password: password.value
         })),
         headers: {'Content-Type': 'application/json'},
@@ -101,5 +100,3 @@ global.register = async function() {
         email.reportValidity();
     }
 }
-
-module.exports = {};

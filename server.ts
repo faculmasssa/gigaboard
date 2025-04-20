@@ -1,67 +1,84 @@
-// @ts-check
+import dotenv from 'dotenv';
 
-require('dotenv').config();
-const express = require('express');
-const basicAuth = require('express-basic-auth');
-const bodyParser = require('body-parser');
-const { BufferMap } = require('buffer-map');
-const cookieParser = require('cookie-parser');
-const crypto = require('crypto');
-const path = require('path');
-const { Sequelize, DataTypes, Model } = require('sequelize');
-const formatter = new (require('fracturedjsonjs')).Formatter();
+import express from 'express';
+import basicAuth from 'express-basic-auth';
+import { BufferMap } from 'buffer-map'
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import crypto from 'crypto';
+import { Formatter } from 'fracturedjsonjs';
+import path from 'path';
+import { AllowNull, Column, PrimaryKey, Table, Sequelize, Model, DataType, AutoIncrement, HasMany, BelongsTo, ForeignKey } from 'sequelize-typescript';
 
+const formatter = new Formatter();
+
+dotenv.config();
 const app = express();
 
 const db = new Sequelize({ dialect: "sqlite", storage: path.join(__dirname, 'db.sql') });
 db.sync({ force: true });
 
-/**
- * @typedef {Object} User
- * @property {number} id 
- * @property {string} name 
- * @property {string} email 
- * @property {Buffer} password 
- * @property {Buffer} salt 
- * @typedef {Model<User, import('sequelize').Optional<User, 'id'>> & User} UserModel
- */
-const User = db.define('User', /** @type {import('sequelize').ModelAttributes<UserModel>} */ ({
-    id: { type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true },
-    name: { type: DataTypes.STRING, allowNull: false },
-    email: { type: DataTypes.STRING, allowNull: false },
-    password: { type: 'BINARY(32)', allowNull: false },
-    salt: { type: 'BINARY(16)', allowNull: false },
-}));
+@Table
+class User extends Model {
 
-let /** @type {BufferMap<number>} */ sessions = new BufferMap();
+    @AllowNull(false) @PrimaryKey @AutoIncrement @Column(DataType.INTEGER)
+    id!: number;
+    @AllowNull(false) @Column(DataType.TEXT) 
+    name!: string;
+    @AllowNull(false) @Column(DataType.TEXT) 
+    email!: string;
+    @AllowNull(false) @Column('BINARY(32)') 
+    password!: Buffer;
+    @AllowNull(false) @Column('BINARY(16)') 
+    salt!: Buffer;
+    
+    @HasMany(() => Task)
+    tasks!: Task[]
+}
 
-const public = path.join(__dirname, "./public");
+@Table
+class Task extends Model {
 
-app.use(express.static(public, { index: false }));
+    @AllowNull(false) @Column(DataType.TEXT) 
+    name!: string;
+
+    @BelongsTo(() => User)
+    user!: User
+    @ForeignKey(() => User)
+    userId!: number
+}
+
+db.addModels([User, Task]);
+
+let sessions: BufferMap<number> = new BufferMap();
+
+const publicDir = path.join(__dirname, "./public");
+
+app.use(express.static(publicDir, { index: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
     if(!('token' in req.cookies)) {
-        res.sendFile(path.join(public, './index.html'));
+        res.sendFile(path.join(publicDir, './index.html'));
         return;
     }
     let token = Buffer.from(/** @type {string} */ (req.cookies['token']), 'base64');
     if(sessions.has(token)) {
-        res.sendFile(path.join(public, './painel.html'));
+        res.sendFile(path.join(publicDir, './painel.html'));
     }else {
-        res.sendFile(path.join(public, './index.html'));
+        res.sendFile(path.join(publicDir, './index.html'));
     }
 });
 
 app.get('/cadastro', (req, res) => {
-    res.sendFile(path.join(public, './cadastro.html'));
+    res.sendFile(path.join(publicDir, './cadastro.html'));
 });
 
 app.get('/admin', basicAuth({ 
-    users: {'admin': /** @type {string} */ (process.env['API_KEY'])}, challenge: true 
+    users: {'admin': <string>(process.env['API_KEY'])}, challenge: true 
 }), (req, res) => {
-    res.sendFile(path.join(public, './admin.html'));
+    res.sendFile(path.join(publicDir, './admin.html'));
 });
 
 /** @typedef {import('./js/cadastro.js').RegisterInfo} RegisterInfo */
@@ -75,7 +92,7 @@ app.post('/api/register', async (req, res) => {
     let salt = crypto.randomBytes(16);
     let hashedPass = crypto.pbkdf2Sync(info.password, salt, 1000, 32, "sha256");
     let user = await User.build({ name: info.name, email: info.email, password: hashedPass, salt: salt }).save();
-    let /** @type {number} */ id = user.id;
+    let id: number = user.id;
     let token = crypto.randomBytes(32);
     sessions.set(token, id);
     res.status(200).send(token);
@@ -99,12 +116,9 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-/**
- * @typedef {Object} LogoutInfo
- * @property {string} token
- */
+export interface LogoutInfo { token: string }
 app.post('/api/logout', async (req, res) => {
-    let /** @type {LogoutInfo} */ info = req.body;
+    let info: LogoutInfo = req.body;
     let token = Buffer.from(info.token, 'base64');
     if(sessions.has(token)) {
         sessions.delete(token);
