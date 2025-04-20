@@ -1,7 +1,7 @@
 # GigaBoard
 [Descrição foda aqui]
 
-## Como rodar localmente:
+## Como rodar localmente
 Um tutorial rápido de como rodar o GigaBoard localmente para o desenvolvimento:
 1. Instale as bibliotecas com `npm i`
 2. Instale a ferramenta Gulp com o comando `npm i -g gulp-cli`

@@ -16,7 +16,6 @@ const app = express();
 const db = new Sequelize({ dialect: "sqlite", storage: path.join(__dirname, 'db.sql') });
 db.sync({ force: true });
 
-
 /**
  * @typedef {Object} User
  * @property {number} id 
