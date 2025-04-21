@@ -1,6 +1,6 @@
 import cookie from 'js-cookie'
 
-export async function logout() {
+(global as any).logout = async function() {
     await fetch('/api/logout', {
         method: 'POST',
         body: JSON.stringify(/** @type {import('../server').LogoutInfo} */ ({

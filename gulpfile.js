@@ -1,9 +1,11 @@
 // @ts-check
 
+const factor = require('factor-bundle');
 const fs = require('fs');
 const gulp = require('gulp');
 const browserify = require('browserify');
 const tsify = require('tsify');
+const source = require('vinyl-source-stream');
 const watchify = require('watchify');
 
 const input = './src';
@@ -17,40 +19,25 @@ if(!fs.existsSync(output)) {
     fs.mkdirSync(output);
 }
 
-/**
- * @param {string} entry 
- */
-function getBrowserify(entry) {
-    return browserify(`${input}/${entry}.ts`, { standalone: entry }).plugin(tsify);
-}
-
-// Build uma vez
-gulp.task('build', function(done) {
-    let remaining;
-    scripts.forEach((entry, _, entries) => {
-        remaining = remaining || entries.length;
-        getBrowserify(entry).bundle().pipe(
-            fs.createWriteStream(`${output}/${entry}.js`).on('finish', function() {
-                if(!--remaining) done();
-            })
-        );
-    });
+// Builda uma vez
+gulp.task('build', function() {
+    return browserify(scripts.map(s => `${input}/${s}.ts`))
+        .plugin(tsify)
+        .plugin(factor, { o: scripts.map(s => `${output}/${s}.js`) })
+        .bundle()
+        .pipe(source('common.js'))
+        .pipe(gulp.dest(output));
 });
 
 // Builda várias vezes automaticamente (deixa rodando em outro terminal)
-gulp.task('watch', function(done) {
-    let remaining;
-    scripts.forEach((entry, _, entries) => {
-        remaining = remaining || entries.length;
-        let bundler = watchify(getBrowserify(entry));
-        function bundle() {
-            bundler.bundle().pipe(
-                fs.createWriteStream(`${output}/${entry}.js`).on('finish', function() {
-                    if(!--remaining) done();
-                })
-            );
-        }
-        bundle();
-        bundler.on("update", bundle);
-    });
+gulp.task('watch', function() {
+    let bundler = watchify(browserify(scripts.map(s => `${input}/${s}.ts`))
+        .plugin(tsify)
+        .plugin(factor, { o: scripts.map(s => `${output}/${s}.js`) })
+    );
+    function bundle() {
+        bundler.bundle().pipe(source('common.js')).pipe(gulp.dest(output));
+    }
+    bundle();
+    bundler.on("update", bundle);
 });

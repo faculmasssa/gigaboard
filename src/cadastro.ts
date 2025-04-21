@@ -1,5 +1,5 @@
 import { Buffer } from "buffer/"
-const cookie = require('js-cookie');
+import cookie from 'js-cookie';
 
 const mainBox = <HTMLElement>(document.getElementById('mainBox'));
 const infoText = <HTMLElement>(document.getElementById('infoText'));
@@ -23,7 +23,7 @@ function swapForm() {
     }
 }
 
-export function toggleForm() {
+(global as any).toggleForm = function() {
     isCadastro = !isCadastro;
     swapForm();
 }
@@ -33,7 +33,7 @@ export interface LoginInfo {
     password: string
 }
 
-export async function login() {
+(global as any).login = async function() {
     let email = <HTMLInputElement>(document.getElementById("login-email"));
     let password = <HTMLInputElement>(document.getElementById("login-password"));
     if(!email.reportValidity() || !password.reportValidity()) {
@@ -65,7 +65,7 @@ export interface RegisterInfo {
     password: string
 }
 
-export async function register() {
+(global as any).register = async function() {
     let name = <HTMLInputElement>(document.getElementById("register-name"));
     let email = <HTMLInputElement>(document.getElementById("register-email"));
     let password = <HTMLInputElement>(document.getElementById("register-password"));

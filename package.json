@@ -19,9 +19,11 @@
     "@types/express": "^5.0.1",
     "@types/js-cookie": "^3.0.6",
     "browserify": "^17.0.1",
+    "factor-bundle": "^2.5.0",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "tsify": "^5.0.4",
+    "vinyl-source-stream": "^2.0.0",
     "watchify": "^4.0.0"
   }
 }
