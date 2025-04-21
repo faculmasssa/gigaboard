@@ -10,7 +10,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 20px;
   color: #f0f0f0;
 }
 
@@ -36,34 +37,35 @@ body {
 }
 
 .main {
-  width: 850px;
-  height: 450px;
+  width: 100%;
+  max-width: 850px;
   background: #1f1f2e;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
   display: flex;
   overflow: hidden;
   transition: all 0.3s ease;
+  flex-direction: row;
 }
 
 .form-wrapper {
-  width: 650px;
+  flex: 1;
   overflow: hidden;
 }
 
 .form-container {
   display: flex;
-  width: 1300px;
+  width: 200%;
   transition: transform 0.6s ease-in-out;
 }
 
 .cadastro-mode .form-container {
-  transform: translateX(-650px);
+  transform: translateX(-50%);
 }
 
 .form-side {
-  width: 650px;
-  padding: 50px;
+  width: 100%;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -73,8 +75,26 @@ body {
 
 .form-side h2 {
   margin-bottom: 25px;
-  font-size: 28px;
+  font-size: 26px;
   color: #ffffff;
+  text-align: center;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 400;
+}
+
+label img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* deixa o ícone branco */
 }
 
 .form-side input {
@@ -133,7 +153,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-
 .info-side button {
   background: #28a745;
   color: white;
@@ -167,7 +186,7 @@ body {
 @media (max-width: 768px) {
   .main {
     flex-direction: column;
-    width: 90%;
+    width: 100%;
     height: auto;
   }
 
@@ -177,17 +196,34 @@ body {
     width: 100%;
   }
 
-  .info-side {
-    border-left: none;
-    border-top: 1px solid #2e2e44;
+  .form-container {
+    display: flex;
+    flex-direction: row;
+    width: 200%;
+    transition: transform 0.6s ease-in-out;
   }
 
-  .form-container {
-    flex-direction: column;
+  .form-side {
     width: 100%;
+    padding: 30px 20px;
   }
 
   .cadastro-mode .form-container {
-    transform: translateY(-100%);
+    transform: translateX(-50%);
+  }
+
+  .info-side {
+    border-left: none;
+    border-top: 1px solid #2e2e44;
+    padding: 30px 20px;
+  }
+
+  .form-side h2 {
+    font-size: 22px;
+  }
+
+  .form-side input,
+  .form-side button {
+    font-size: 15px;
   }
 }
