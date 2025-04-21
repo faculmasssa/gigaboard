@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 
 const db = new Sequelize({ dialect: "sqlite", storage: path.join(__dirname, 'db.sql') });
-db.sync({ force: true });
+db.sync();
 
 @Table
 class User extends Model {
@@ -33,7 +33,7 @@ class User extends Model {
     salt!: Buffer;
     
     @HasMany(() => Task)
-    tasks!: Task[]
+    tasks!: Task[];
 }
 
 @Table
@@ -43,9 +43,9 @@ class Task extends Model {
     name!: string;
 
     @BelongsTo(() => User)
-    user!: User
+    user!: User;
     @ForeignKey(() => User)
-    userId!: number
+    userId!: number;
 }
 
 db.addModels([User, Task]);
