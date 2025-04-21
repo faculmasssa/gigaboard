@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
         res.sendFile(path.join(publicDir, './index.html'));
         return;
     }
-    let token = Buffer.from(/** @type {string} */ (req.cookies['token']), 'base64');
+    let token = Buffer.from(<string>(req.cookies['token']), 'base64');
     if(sessions.has(token)) {
         res.sendFile(path.join(publicDir, './painel.html'));
     }else {

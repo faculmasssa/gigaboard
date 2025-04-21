@@ -13,4 +13,4 @@ Um tutorial rápido de como rodar o GigaBoard localmente para o desenvolvimento:
     API_KEY=[Chave API gerada por você]
     ```
 4. Gere os scripts do navegador com `gulp build` ou `gulp watch`
-5. Rode o servidor com `ts-node server.js`
+5. Rode o servidor com `ts-node server.ts`
