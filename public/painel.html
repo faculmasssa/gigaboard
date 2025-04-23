@@ -19,13 +19,13 @@
   <div class="container">
     <h1>Minha Lista de Tarefas</h1>
 
-    <form class="input-container">
-      <input type="text" placeholder="Adicione uma nova tarefa..." required />
-      <button type="submit">
+    <div class="input-container">
+      <input type="text" id="task-name" placeholder="Adicione uma nova tarefa..." required />
+      <button type="submit" id="task-add">
         <img src="/assets/icons/plus-circle.svg" alt="Adicionar" width="20" />
         Adicionar
       </button>
-    </form>
+    </div>
 
     <div class="filter-buttons">
       <button class="filter-btn active">Todas</button>
@@ -34,54 +34,7 @@
       <button class="filter-btn">Concluídas</button>
     </div>
 
-    <ul class="task-list">
-      <li class="task-item">
-        <span class="task-text">Estudar JavaScript</span>
-        <div class="action-buttons">
-          <button class="edit-btn" title="Editar">
-            <img src="/assets/icons/pencil-square.svg" alt="Editar" width="20" />
-          </button>
-          <button class="toggle-btn" title="Alterar status">
-            <img src="/assets/icons/check-circle.svg" alt="Status" width="20" />
-          </button>
-          <button class="delete-btn" title="Excluir">
-            <img src="/assets/icons/trash.svg" alt="Excluir" width="20" />
-          </button>
-        </div>
-      </li>
-
-      <li class="task-item">
-        <img src="/assets/icons/arrow-repeat.svg" alt="Em andamento" width="20" />
-        <span class="task-text">Fazer layout do projeto</span>
-        <div class="action-buttons">
-          <button class="edit-btn" title="Editar">
-            <img src="/assets/icons/pencil-square.svg" alt="Editar" width="20" />
-          </button>
-          <button class="toggle-btn" title="Alterar status">
-            <img src="/assets/icons/check-circle.svg" alt="Status" width="20" />
-          </button>
-          <button class="delete-btn" title="Excluir">
-            <img src="/assets/icons/trash.svg" alt="Excluir" width="20" />
-          </button>
-        </div>
-      </li>
-
-      <li class="task-item">
-        <img src="/assets/icons/check-circle.svg" alt="Concluída" width="20" />
-        <span class="task-text">Enviar projeto final</span>
-        <div class="action-buttons">
-          <button class="edit-btn" title="Editar">
-            <img src="/assets/icons/pencil-square.svg" alt="Editar" width="20" />
-          </button>
-          <button class="toggle-btn" title="Reabrir tarefa">
-            <img src="/assets/icons/arrow-counterclockwise.svg" alt="Reabrir" width="20" />
-          </button>
-          <button class="delete-btn" title="Excluir">
-            <img src="/assets/icons/trash.svg" alt="Excluir" width="20" />
-          </button>
-        </div>
-      </li>
-    </ul>
+    <ul class="task-list"></ul>
   </div>
 
   <button id="logout-btn" onclick="logout()">

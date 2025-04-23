@@ -9,6 +9,8 @@ import crypto from 'crypto';
 import { Formatter } from 'fracturedjsonjs';
 import path from 'path';
 import { AllowNull, Column, PrimaryKey, Table, Sequelize, Model, DataType, AutoIncrement, HasMany, BelongsTo, ForeignKey } from 'sequelize-typescript';
+import type { LoginInfo, RegisterInfo } from './src/cadastro';
+import type { QueryInfo } from './src/admin';
 
 const formatter = new Formatter();
 
@@ -19,7 +21,7 @@ const db = new Sequelize({ dialect: "sqlite", storage: path.join(__dirname, 'db.
 db.sync();
 
 @Table
-class User extends Model {
+export class User extends Model {
 
     @AllowNull(false) @PrimaryKey @AutoIncrement @Column(DataType.INTEGER)
     id!: number;
@@ -36,11 +38,15 @@ class User extends Model {
     tasks!: Task[];
 }
 
+export type TaskStatus = 'pending'|'ongoing'|'done';
+
 @Table
-class Task extends Model {
+export class Task extends Model {
 
     @AllowNull(false) @Column(DataType.TEXT) 
     name!: string;
+    @AllowNull(false) @Column(DataType.ENUM('peding', 'ongoing', 'done'))
+    status!: TaskStatus
 
     @BelongsTo(() => User)
     user!: User;
@@ -58,13 +64,15 @@ app.use(express.static(publicDir, { index: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     if(!('token' in req.cookies)) {
         res.sendFile(path.join(publicDir, './index.html'));
         return;
     }
     let token = Buffer.from(<string>(req.cookies['token']), 'base64');
     if(sessions.has(token)) {
+        console.log(await User.findByPk(sessions.get(token)));
+        res.cookie('data', JSON.stringify((<User>await User.findByPk(sessions.get(token))).tasks || []));
         res.sendFile(path.join(publicDir, './painel.html'));
     }else {
         res.sendFile(path.join(publicDir, './index.html'));
@@ -81,9 +89,8 @@ app.get('/admin', basicAuth({
     res.sendFile(path.join(publicDir, './admin.html'));
 });
 
-/** @typedef {import('./js/cadastro.js').RegisterInfo} RegisterInfo */
 app.post('/api/register', async (req, res) => {
-    let /** @type {RegisterInfo} */ info = req.body;
+    let info: RegisterInfo = req.body;
     let conflictingUser = await User.findOne({ where: { email: info.email } });
     if(conflictingUser) {
         res.sendStatus(409);
@@ -98,9 +105,8 @@ app.post('/api/register', async (req, res) => {
     res.status(200).send(token);
 });
 
-/** @typedef {import('./js/cadastro.js').LoginInfo} LoginInfo */
 app.post('/api/login', async (req, res) => {
-    let /** @type {RegisterInfo} */ info = req.body;
+    let info: LoginInfo = req.body;
     let user = await User.findOne({where: { email: info.email }});
     if(!user) {
         res.sendStatus(409);
@@ -126,9 +132,8 @@ app.post('/api/logout', async (req, res) => {
     res.sendStatus(200);
 });
 
-/** @typedef {import('./js/admin.js').QueryInfo} QueryInfo */
 app.post('/api/query', async (req, res) => {
-    let /** @type {QueryInfo} */ info = req.body;
+    let info: QueryInfo = req.body;
     if(info.key !== process.env['API_KEY']) {
         res.sendStatus(401);
         return;
