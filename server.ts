@@ -11,6 +11,8 @@ import path from 'path';
 import { AllowNull, Column, PrimaryKey, Table, Sequelize, Model, DataType, AutoIncrement, HasMany, BelongsTo, ForeignKey } from 'sequelize-typescript';
 import type { LoginInfo, RegisterInfo } from './src/cadastro';
 import type { QueryInfo } from './src/admin';
+import type { TaskInfo } from './src/painel';
+import { use } from 'react';
 
 const formatter = new Formatter();
 
@@ -18,24 +20,23 @@ dotenv.config();
 const app = express();
 
 const db = new Sequelize({ dialect: "sqlite", storage: path.join(__dirname, 'db.sql') });
-db.sync();
 
 @Table
 export class User extends Model {
 
     @AllowNull(false) @PrimaryKey @AutoIncrement @Column(DataType.INTEGER)
-    id!: number;
+    declare id: number;
     @AllowNull(false) @Column(DataType.TEXT) 
-    name!: string;
+    declare name: string;
     @AllowNull(false) @Column(DataType.TEXT) 
-    email!: string;
+    declare email: string;
     @AllowNull(false) @Column('BINARY(32)') 
-    password!: Buffer;
+    declare password: Buffer;
     @AllowNull(false) @Column('BINARY(16)') 
-    salt!: Buffer;
+    declare salt: Buffer;
     
     @HasMany(() => Task)
-    tasks!: Task[];
+    declare tasks: Task[];
 }
 
 export type TaskStatus = 'pending'|'ongoing'|'done';
@@ -44,17 +45,18 @@ export type TaskStatus = 'pending'|'ongoing'|'done';
 export class Task extends Model {
 
     @AllowNull(false) @Column(DataType.TEXT) 
-    name!: string;
-    @AllowNull(false) @Column(DataType.ENUM('peding', 'ongoing', 'done'))
-    status!: TaskStatus
+    declare name: string;
+    @AllowNull(false) @Column(DataType.ENUM('pending', 'ongoing', 'done'))
+    declare status: TaskStatus
 
     @BelongsTo(() => User)
-    user!: User;
-    @ForeignKey(() => User)
-    userId!: number;
+    declare user: User;
+    @ForeignKey(() => User) @AllowNull(false) @Column(DataType.NUMBER)
+    declare userId: number;
 }
 
 db.addModels([User, Task]);
+db.sync();
 
 let sessions: BufferMap<number> = new BufferMap();
 
@@ -71,8 +73,10 @@ app.get('/', async (req, res) => {
     }
     let token = Buffer.from(<string>(req.cookies['token']), 'base64');
     if(sessions.has(token)) {
-        console.log(await User.findByPk(sessions.get(token)));
-        res.cookie('data', JSON.stringify((<User>await User.findByPk(sessions.get(token))).tasks || []));
+        res.cookie('data', JSON.stringify(
+            ((<User>await User.findByPk(sessions.get(token), { include: [Task] })).tasks || [])
+                .map(task => <TaskInfo>{name: task.name, status: task.status})
+        ));
         res.sendFile(path.join(publicDir, './painel.html'));
     }else {
         res.sendFile(path.join(publicDir, './index.html'));
@@ -139,6 +143,19 @@ app.post('/api/query', async (req, res) => {
         return;
     }
     res.status(200).send(formatter.Serialize(await db.query(info.query)));
+});
+
+app.post('/api/updatetasks', async (req, res) => {
+    let token = Buffer.from(req.cookies['token'], 'base64');
+    if(!sessions.has(token)) {
+        res.sendStatus(400);
+        return;
+    }
+    let user = <User>await User.findByPk(sessions.get(token), { include: Task });
+    Task.destroy({ where: { userId: user.id } });
+    (<TaskInfo[]>req.body).forEach(async task => 
+        await Task.build({name: task.name, status: task.status, userId: user.id}).save()
+    );
 });
 
 const PORT = process.env.PORT || 3000;

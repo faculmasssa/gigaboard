@@ -15,17 +15,9 @@ import type { LogoutInfo, Task, TaskStatus } from '../server';
     window.location.reload();
 }
 
-interface TaskInfo {
+export interface TaskInfo {
     name: string,
     status: TaskStatus
-}
-
-function addTask(tasks: TaskInfo[], setTasks: Dispatch<SetStateAction<TaskInfo[]>>) {
-    let input = document.getElementById('task-name') as HTMLInputElement;
-    if(!input.reportValidity()) {
-        return;
-    }
-    setTasks([...tasks, { name: input.value, status: 'pending' as TaskStatus }]);
 }
 
 function getStatusIcon(status: TaskStatus) {
@@ -39,10 +31,22 @@ function getStatusIcon(status: TaskStatus) {
     }
 }
 
+function addTask(tasks: TaskInfo[], setTasks: Dispatch<SetStateAction<TaskInfo[]>>) {
+    let input = document.getElementById('task-name') as HTMLInputElement;
+    if(!input.reportValidity()) {
+        return;
+    }
+    let newTasks = [...tasks, { name: input.value, status: 'pending' as TaskStatus }];
+    setTasks(newTasks);
+    syncTasks(newTasks).catch(()=>{});
+}
+
+
 function deleteTask(tasks: TaskInfo[], setTasks: Dispatch<SetStateAction<TaskInfo[]>>, index: number) {
     let tasksClone = [...tasks];
     tasksClone.splice(index, 1);
     setTasks(tasksClone);
+    syncTasks(tasksClone).catch(()=>{});
 } 
 
 function renameTask(tasks: TaskInfo[], setTasks: Dispatch<SetStateAction<TaskInfo[]>>, index: number) {
@@ -53,6 +57,7 @@ function renameTask(tasks: TaskInfo[], setTasks: Dispatch<SetStateAction<TaskInf
     let tasksClone = [...tasks];
     tasksClone[index].name = name;
     setTasks(tasksClone);
+    syncTasks(tasksClone).catch(()=>{});
 }
 
 function changeTask(tasks: TaskInfo[], setTasks: Dispatch<SetStateAction<TaskInfo[]>>, index: number) {
@@ -69,17 +74,37 @@ function changeTask(tasks: TaskInfo[], setTasks: Dispatch<SetStateAction<TaskInf
             break;
     }
     setTasks(tasksClone);
+    syncTasks(tasksClone).catch(()=>{});
+}
+
+async function syncTasks(tasks: TaskInfo[]) {
+    await fetch('/api/updatetasks', {
+        method: 'POST',
+        body: JSON.stringify(tasks),
+        headers: {'Content-Type': 'application/json'},
+    });
+}
+
+type Filter = TaskStatus|'all';
+
+function changeFilter(filter: Filter, setFilter: Dispatch<SetStateAction<Filter>>, button: HTMLElement, buttons: HTMLElement[]) {
+    buttons.find(button => button.classList.contains('active'))?.classList.remove('active');
+    setFilter(filter);
+    button.classList.add('active');
 }
 
 function Tasks() {
-    const [tasks, setTasks] = useState((JSON.parse(cookie.get('data') as string) as Task[]).map(task => { return {
-        name: task.name,
-        status: task.status
-    } as TaskInfo}));
+    const [tasks, setTasks] = useState((JSON.parse(cookie.get('data') as string) as TaskInfo[]));
+    const [filter, setFilter] = useState('all' as Filter);
+    const filterButtons = [...document.getElementsByClassName('filter-btn')] as HTMLElement[];
+    filterButtons[0].addEventListener('click', ev => changeFilter('all', setFilter, ev.target as HTMLElement, filterButtons));
+    filterButtons[1].addEventListener('click', ev => changeFilter('pending', setFilter, ev.target as HTMLElement, filterButtons));
+    filterButtons[2].addEventListener('click', ev => changeFilter('ongoing', setFilter, ev.target as HTMLElement, filterButtons));
+    filterButtons[3].addEventListener('click', ev => changeFilter('done', setFilter, ev.target as HTMLElement, filterButtons));
     (document.getElementById('task-add') as HTMLButtonElement)
         .addEventListener('click', () => addTask(tasks, setTasks));
     return <>{
-        tasks.map((task, i) => 
+        tasks.filter(task => filter === 'all' || task.status === filter).map((task, i) => 
             <TaskItem key={i} task={task} index={i} tasks={tasks} setTasks={setTasks}/>
         )
     }</>;
