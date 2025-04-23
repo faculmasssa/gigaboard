@@ -5,6 +5,10 @@
   box-sizing: border-box;
 }
 
+button > img, li > img {
+  filter: brightness(0) invert(1);
+}
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #121212;
@@ -145,7 +149,6 @@ h1 {
 .action-buttons button img {
   width: 22px;
   height: 22px;
-  filter: brightness(0.8);
   transition: filter 0.3s;
 }
 

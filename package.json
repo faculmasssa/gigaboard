@@ -10,13 +10,24 @@
     "express-basic-auth": "^1.2.1",
     "fracturedjsonjs": "^4.0.2",
     "js-cookie": "^3.0.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "sequelize": "^6.37.7",
+    "sequelize-typescript": "^2.1.6",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.1",
+    "@types/js-cookie": "^3.0.6",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
     "browserify": "^17.0.1",
+    "factor-bundle": "^2.5.0",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
+    "tsify": "^5.0.4",
+    "vinyl-source-stream": "^2.0.0",
     "watchify": "^4.0.0"
   }
 }
