@@ -1,6 +1,6 @@
-import cookie from 'js-cookie'
+import cookie from 'js-cookie';
 import { Dispatch, SetStateAction, useState } from 'react';
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom/client';
 import type { LogoutInfo, Task, TaskStatus } from '../server';
 
 (global as any).logout = async function () {
@@ -80,20 +80,19 @@ function Tasks() {
         .addEventListener('click', () => addTask(tasks, setTasks));
     return <>{
         tasks.map((task, i) => 
-            <TaskItem key={i} text={task.name} status={task.status} index={i} tasks={tasks} setTasks={setTasks}/>
+            <TaskItem key={i} task={task} index={i} tasks={tasks} setTasks={setTasks}/>
         )
     }</>;
 }
 
-function TaskItem({text, status, index, tasks, setTasks}: {
-    text: string, status: TaskStatus, index: number, 
-    tasks: TaskInfo[], setTasks:Dispatch<SetStateAction<TaskInfo[]>>
+function TaskItem({task, index, tasks, setTasks}: {
+    task: TaskInfo, index: number, tasks: TaskInfo[], setTasks:Dispatch<SetStateAction<TaskInfo[]>>
 }) {
-    let icon = getStatusIcon(status);
+    let icon = getStatusIcon(task.status);
     return (
         <li className="task-item">
             {icon && <img src={icon.path} alt={icon.alt} width="20"/>}
-            <span className="task-text">{text}</span>
+            <span className="task-text">{task.name}</span>
             <div className="action-buttons">
                 <button className="edit-btn" title="Editar" onClick={()=>renameTask(tasks, setTasks, index)}>
                     <img src="/assets/icons/pencil-square.svg" alt="Editar" width="20" />
