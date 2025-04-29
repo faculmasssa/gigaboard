@@ -8,8 +8,10 @@
 /* Estilo do corpo da página */
 body {
   font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #12121c;
-  color: #f0f0f0;
+  background-image: url("/assets/images/fundo2.png");
+  background-attachment: fixed; 
+  background-size: cover; 
+  background-repeat: no-repeat; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -17,7 +19,7 @@ body {
 
 /* Cabeçalho */
 header {
-  background-color: #1f1f2e;
+  background-color: #e75a18;
   padding: 20px 40px;
   display: flex;
   justify-content: space-between;
@@ -61,7 +63,7 @@ main {
   text-align: center;
   max-width: 800px;
   padding: 40px;
-  background-color: #1f1f2e;
+  background-color: #141414fa;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
@@ -83,7 +85,7 @@ main {
 .btn {
   display: inline-block;
   padding: 14px 28px;
-  background: linear-gradient(90deg, #007bff, #005eea);
+  background: linear-gradient(90deg, #e75a18, #f35106);
   color: white;
   border-radius: 8px;
   text-decoration: none;
@@ -92,17 +94,17 @@ main {
   transition: all 0.3s ease;
   margin-top: 20px;
   border: none;
-  box-shadow: 0 0 12px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 12px rgba(255, 94, 0, 0.3);
 }
 
 .btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 18px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 18px rgba(255, 102, 0, 0.5);
 }
 
 /* Rodapé */
 footer {
-  background-color: #1f1f2e;
+  background-color: #000000;
   text-align: center;
   padding: 15px;
   font-size: 0.9em;
