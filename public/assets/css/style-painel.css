@@ -11,7 +11,10 @@ button > img, li > img {
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
+    background-image: url("/assets/images/fundo9.png");
+  background-attachment: fixed; 
+  background-size: cover; 
+  background-repeat: no-repeat; 
   color: #f0f0f0;
   min-height: 100vh;
   display: flex;
@@ -22,7 +25,7 @@ body {
 
 /* Container principal */
 .container {
-  background-color: #1e1e2f;
+  background-color: #141414;
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -62,7 +65,7 @@ h1 {
   padding: 12px 18px;
   border: none;
   border-radius: 6px;
-  background-color: #007bff;
+  background-color: #d1581f;
   color: #fff;
   font-weight: bold;
   cursor: pointer;
@@ -75,7 +78,7 @@ h1 {
 }
 
 .input-container button:hover {
-  background-color: #0056d2;
+  background-color: #ff5100;
 }
 
 /* Botões de filtro */
@@ -102,7 +105,7 @@ h1 {
 
 .filter-btn.active,
 .filter-btn:hover {
-  background-color: #007bff;
+  background-color: #d1581f;
   color: white;
 }
 
@@ -164,8 +167,8 @@ h1 {
   left: 20px;
   padding: 10px 18px;
   background: transparent;
-  border: 2px solid #007bff;
-  color: #007bff;
+  border: 2px solid #d1581f;
+  color: #d1581f;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
@@ -181,7 +184,7 @@ h1 {
 }
 
 .btn-voltar:hover {
-  background-color: #007bff;
+  background-color: #ff5100;
   color: white;
 }
 
@@ -191,13 +194,13 @@ h1 {
   top: 20px;
   right: 20px;
   padding: 10px 18px;
-  background: linear-gradient(to right, #007bff, #0056d2);
+  background: linear-gradient(to right, #d1581f, #ff5100);
   color: white;
   font-weight: bold;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 4px 10px rgba(255, 115, 0, 0.3);
   transition: all 0.3s ease-in-out;
   display: flex;
   align-items: center;
@@ -211,7 +214,7 @@ h1 {
 
 #logout-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 6px 15px rgba(255, 136, 0, 0.5);
 }
 
 /* Responsividade */
