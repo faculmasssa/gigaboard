@@ -23,11 +23,24 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "browserify": "^17.0.1",
+    "cypress": "^14.3.2",
     "factor-bundle": "^2.5.0",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "tsify": "^5.0.4",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^4.0.0"
-  }
+  },
+  "version": "1.0.0",
+  "description": "[Descrição foda aqui]",
+  "main": "gulpfile.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
